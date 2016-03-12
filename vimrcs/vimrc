@@ -1,0 +1,77 @@
+colo evening
+
+" Map the leader key.
+let mapleader=","
+
+set autoindent
+set pastetoggle=<F5>
+set smarttab
+set hlsearch
+set scs
+set nu
+set history=500
+set ruler
+set incsearch
+set expandtab
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set scrolloff=20
+set backspace=indent,start,eol
+set showmatch
+set textwidth=80
+set colorcolumn=81
+set formatoptions+=t
+set autochdir
+
+function! HasPaste()
+    if &paste
+        return 'P  '
+    en
+    return 'NP '
+endfunction
+set laststatus=2    " always show status line
+set showmode
+set showcmd
+set statusline=\ %{HasPaste()}%F%m%h\ %w\
+set statusline+=\ %r      "read only flag
+set statusline+=%y      "filetype
+set statusline+=%=      "left/right separator
+set statusline+=%c     "cursor column
+set statusline+=\ %l/%L\ %P   "cursor line/total lines Percentage
+
+nmap <C-n> :nohlsearch <CR>
+
+" For mini buffer explorer close current buffer.
+nmap <C-d> <C-w>kd<Esc>
+nnoremap H  :MBEbp<CR>
+nnoremap L  :MBEbn<CR>
+
+" Folding
+nnoremap <space> za
+nnoremap <C-c> zA
+vnoremap <space> zf
+vnoremap <C-c> zF
+vnoremap // y/<c-r>"<cr>
+
+" Saving and exiting
+imap <C-s> <Esc>:up<CR>
+vmap <C-s> <Esc>:up<CR>
+nmap <C-s> :up<CR>
+imap <C-q> <Esc>:wq<CR>
+vmap <C-q> <Esc>:wq<CR>
+nmap <C-q> :wq<CR>
+vmap <C-x> <Esc>:q!<CR>
+imap <C-x> <Esc>:q!<CR>
+nmap <C-x> :q!<CR>
+
+autocmd BufEnter *.go,*.py,*.h,*.cc set foldmethod=indent
+
+" Removes trailing spaces.
+autocmd BufWritePre *.py,*.go,*.h,*.cc,*.sh,*.proto,*.md,*.borg :%s/\s\+$//e
+
+" By default, Vim recognizes files with the .md suffix as Modula2 files rather
+" than Markdown files.
+autocmd BufNewFile,BufRead *.md setfiletype markdown
+
+execute pathogen#infect()

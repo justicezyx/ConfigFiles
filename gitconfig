@@ -1,0 +1,35 @@
+[core]
+	excludesfile = /usr/local/google/home/yaxiongzhao/.gitignore_global
+[user]
+	email = justicezyx@gmail.com
+	name = Yaxiong Zhao
+[alias]
+	st = status
+	hist = log --pretty=oneline --abbrev-commit
+	co = checkout
+	br = branch
+	tl = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr %an)%Crest' --abbrev-commit --date=relative
+	ci = commit
+  cia = commit -a
+  root = rev-parse --show-toplevel
+[color]
+	ui = auto
+[push]
+	default = matching
+[diff]
+  # external = /usr/local/google/home/yaxiongzhao/bin/git-diff-wrapper.sh
+  # tool = bc3
+[merge]
+	tool = diffmerge
+[mergetool "bc3"]
+	cmd = /usr/local/google/home/yaxiongzhao/bin/bcompare $LOCAL $REMOTE $BASE $MERGED
+	trustExitCode = true
+[difftool]
+  # bc3 = trustExitCode
+[diff]
+	tool = diffmerge
+[difftool "diffmerge"]
+	cmd = diffmerge \"$LOCAL\" \"$REMOTE\"
+[mergetool "diffmerge"]
+	cmd = "diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$(if test -f \"$BASE\"; then echo \"$BASE\"; else echo \"$LOCAL\"; fi)\" \"$REMOTE\""
+	trustExitCode = true

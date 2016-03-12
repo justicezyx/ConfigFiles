@@ -1,0 +1,6 @@
+# compiled source #
+*.pyc
+*.[oa]
+*.out
+*.so
+*.class
