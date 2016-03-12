@@ -1,11 +1,6 @@
 # Editor
 export EDITOR='vi'
 
-#Perforce
-export P4CONFIG=.p4config
-export P4DIFF=diffmerge
-export P4EDITOR=${EDITOR}
-
 # GO
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=~/workspace/resource_manager

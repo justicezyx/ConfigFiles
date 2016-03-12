@@ -1,3 +1,5 @@
+# Setup symbol links to the files in PWD.
+
 unlink ~/.gitconfig
 ln -s -f $(pwd)/gitconfig ~/.gitconfig
 

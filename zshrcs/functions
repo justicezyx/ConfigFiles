@@ -3,36 +3,6 @@ function isgit() {
   [ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1
 }
 
-function isg4() {
-  g4 status &>/dev/null
-}
-
-# Print out the client name of the client that resides in the current directory.
-function g4client() {
-  g4 client -o | grep '^Client:' | awk '{print $2}'
-}
-
-# Pinrt out the CL's in the current g4 client.
-alias g4change='g4 changes -u $USER -m 10 -c $(g4client) -s pending'
-
-function change() {
-  if isgit; then
-    rc="$(rclient -l)"
-    g4 changes -u $USER -m 10 -c $(rclient -l) -s pending
-  else
-    g4change
-  fi
-}
-
-# Print out the CLs that in the current client.
-function clnum() {
-  if isgit; then
-    git5 info | grep 'review_cl:' | awk '{print $2}'
-  else
-    g4change | awk '{print $2}'
-  fi
-}
-
 # Workspace functions.
 function _project_root() {
   # $1 is the dir name after ~/workspace/, then append google3.
@@ -72,15 +42,6 @@ function remove() {
   cd ~
 }
 
-function g5rmclient() {
-  dir_to_remove="$(dirname $(_client_root))"
-  echo -n "rm -rf $dir_to_remove, are you sure? [y|n]: "
-  read response
-  if [[ "$response" == "y" ]]; then
-    rm -rf $dir_to_remove
-  fi
-}
-
 function _client_root() {
   if isgit; then
     echo "$(git rev-parse --show-toplevel)/google3"
@@ -93,23 +54,6 @@ function _client_root() {
 
 function root() {
   cd $(_client_root)
-}
-
-# submit the only CL in the directory's client for tap.
-function tap() {
-  if isgit; then
-    echo "git client"
-    git5 export -p mail --ignore_presubmit_warnings
-    return
-  fi
-
-  if isg4; then
-    echo "g4 client"
-    g4 presubmit -a mail --ignore_presubmit_warnings
-    return
-  fi
-
-  echo "Not a client ..."
 }
 
 # New git5 client. Under ~/workspace; given 'track' to track the jupiter module.
@@ -139,82 +83,6 @@ function newclient() {
   cd "google3/$pkg"
 }
 
-function g4clean() {
-  for f in $(g4 nothave)
-  do
-    echo "Removing $f..."
-    rm -rf $f
-  done
-}
-
-function g4revert() {
-  cl_nums="$(echo $(clnum) | tr '\n' ' ')"
-  cl_nums=(${(s: :)cl_nums})
-  echo "Reverting all changes google3/..."
-  g4 revert //...
-  for cl_num in $cl_nums
-  do
-    echo "Reverting cl/$cl_num"
-    g4 revert -c $cl_num
-  done
-}
-
-function _g4haschange_inside_client() {
-  g4 reopen &>/dev/null
-  cl_nums="$(echo $(clnum) | tr '\n' ' ')"
-  cl_nums=(${(s: :)cl_nums})
-  opend_file="$(g4 opened 2>&1 | grep '^//depot.*')"
-  if [[ "$cl_nums" != "" || "$opend_file" != "" ]]; then
-    echo "There are changes in this client."
-    g4 opened
-    return 0
-  fi
-  return 1
-}
-
-function _g4delclient() {
-  if [[ "$1" == "" ]]; then
-    echo "needs client name"
-    return
-  fi
-
-  client_name=$1
-  echo "Deleting client: $client_name"
-  if [[ "$client_name" == *"citc"* ]]; then
-    g4 citc -d "$client_name"
-  else
-    g4 client -d "$client_name"
-  fi
-}
-
-function g4rmclient() {
-  if ! isg4; then
-    echo "Not g4 client, exit..."
-    return
-  fi
-
-  if _g4haschange_inside_client; then
-    if [[ "$1" != "-f" ]]; then
-      echo "There are changes in this client. Use '-f' to revert cl and remove client."
-      return
-    else
-      g4revert
-    fi
-  fi
-
-  _g4delclient $(g4client)
-  cd ~
-}
-
-function rclient() {
-  client_name=$(git5 info | awk -F ':' '{ if($1=="review_client_name") {print $3}}')
-  if [[ "$1" == "-l" ]]; then
-    echo $client_name
-  else
-    g4d $client_name
-  fi
-}
-
 function findoldfile() {
   age=30
   force=false
@@ -236,31 +104,6 @@ function findoldfile() {
   fi
 }
 
-function cr() {
-  if isgit; then
-    echo "Submitting any local changes..."
-    git cia
-    echo "Running git5 fix..."
-    git5 fix
-    echo "Exporting changes..."
-    g5 export
-  else
-    g4 fix
-    g4 upload
-  fi
-
-  url="http://cr/$(clnum)"
-  echo $url
-  google-chrome $url
-}
-
-function g4submit() {
-  g4 submit
-  if [[ "$?" == "0" ]]; then
-    g4rmclient
-  fi
-}
-
 function h() {
   if [ -z "$*" ]; then
     history
@@ -271,92 +114,10 @@ function h() {
   fi
 }
 
-function build_borgmaster_mpm {
-  if [[ "$1" == "" ]]; then
-    echo "build_borgmaster_mpm <label>"
-    return
-  fi
-
-  LABEL="$1"
-  echo "building with label $LABEL"
-  blaze mpm -c opt --mpm_build_arg="--label" --mpm_build_arg="$LABEL" \
-    --embed_label="$LABEL" //borg/master:borgmaster_mpm
-}
-
-function clean_deps() {
-  if [[ "$1" == "" ]]; then
-    echo "Need a target"
-    return 1
-  fi
-
-  target="$1"
-
-  iwyu $target
-  bc $target
-  bb $target
-
-  if [[ "$?" == "0" ]]; then
-    if isgit; then
-      git cia -m "clean_deps $1"
-    fi
-  fi
-}
-
-function g4dd() {
-  # Quote g4d to make it call the unaliased one.
-  'g4d' -f $1 && g4 map -o | sed -r 's/^(import buildenv\/.*;)$/# \1/' | g4 map -i
-}
-
-function herrborgdiff_guitar() {
-  /google/data/ro/projects/testing/integrate/guitar_oneshot.par \
-  --cluster_name=borgcfg_test_cluster \
-  -c $(clnum) \
-  --email_to=${USER}@google.com \
-  --detach \
-  --workflow_name=BorgcfgGuitarUnstableTest \
-  --only_tests_from=herrborgdiff_regression_test
-}
-
-function mrborgdiff_guitar() {
-  /google/data/ro/projects/testing/integrate/guitar_oneshot.par \
-  --cluster_name=borgcfg_test_cluster \
-  -c $(clnum) \
-  --email_to=${USER}@google.com \
-  --detach \
-  --workflow_name=BorgcfgGuitarTest \
-  --only_tests_from=mrborgdiff_regression_test
-}
-
 function work() {
   if tmux has-session -t work; then
     tmux a -t work
   else
     tmux new -s work
   fi
-}
-
-function test_branch() {
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
-
-  if [[ "${current_branch}" == *_test ]]; then
-    echo "Already in a test branch..."
-    return 0
-  fi
-
-  test_branch="${current_branch}_test"
-  if git rev-parse --verify ${test_branch} &>/dev/null; then
-    echo "Already has a test branch..."
-    git co ${test_branch}
-    return 0
-  fi
-
-  current_cl=$(clnum)
-  echo "Creating new test branch: ${test_branch}..."
-  git co -b "${test_branch}"
-  echo "Creating cl..."
-  git5 export -d "test ${current_cl}" --diffbase=${current_branch}
-}
-
-function tap_train() {
-  tap_presubmit -p all --train -c $(clnum)
 }
