@@ -50,8 +50,10 @@ PROMPT='%(!.#.$) '
 # Disable auto correcting.
 unsetopt correct_all
 
-# Disable shell capturing ctrl-s ctrl-q; which is used by vi as key maps.
-stty -ixon
+# Insist that CTRL-S and CTRL-Q be interpreted as control flow (scroll lock)
+# signals.
+stty -ixon -ixoff
+
 
 source ~/.zshrcs/variables
 source ~/.zshrcs/aliases
