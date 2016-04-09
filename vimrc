@@ -1,16 +1,10 @@
 set nocompatible 
+
+" Pathogen
 execute pathogen#infect()
-
-syntax on  
-filetype plugin on  
+call pathogen#helptags()  " generate helptags for everything in 'runtimepath'
+syntax on
 filetype plugin indent on
-let g:go_disable_autoinstall = 0
-
-" Highlight
-let g:go_highlight_functions = 1  
-let g:go_highlight_methods = 1  
-let g:go_highlight_structs = 1  
-let g:go_highlight_operators = 1  
-let g:go_highlight_build_constraints = 1  
 
 source ~/.vimrcs/vimrc
+source ~/.vimrcs/vimgo
