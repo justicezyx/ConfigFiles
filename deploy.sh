@@ -14,6 +14,10 @@ if [ ! -d ~/.vim/bundle/minibufexpl.vim ]; then
     ~/.vim/bundle/minibufexpl.vim
 fi
 
+if [ ! -d ~/.vim/bundle/vim-go ]; then
+  git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
+fi
+
 # Setup symbol links to the files in PWD.
 unlink ~/.gitconfig
 ln -s -f $(pwd)/gitconfig ~/.gitconfig
