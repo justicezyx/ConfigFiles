@@ -1,6 +1,10 @@
-# compiled source #
+# compiled source.
 *.pyc
 *.[oa]
 *.out
 *.so
 *.class
+a.out
+
+# vim swap file.
+*.swp

@@ -2,14 +2,12 @@ function isgit() {
   [ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1
 }
 
-# Workspace functions. $1 is the dir name after ~/workspace/.
 function _project_root() {
-  echo ~/workspace/$1
+  echo ~/workspace/resource_manager/src/github.com/justicezyx/$1
 }
 
-# ls the ~/workspace directory.
 function _gls() {
-  prj=$(ls ~/workspace)
+  prj=$(ls ~/workspace/resource_manager/src/github.com/justicezyx)
   prj_list=(${(@f)prj})
   local index=1
   for p in $prj_list

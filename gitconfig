@@ -1,5 +1,5 @@
 [core]
-	excludesfile = /usr/local/google/home/yaxiongzhao/.gitignore_global
+	excludesfile = ~/.gitignore_global
   editor = vim
 [user]
 	email = justicezyx@gmail.com

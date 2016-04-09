@@ -3,26 +3,27 @@ colo evening
 " Map the leader key.
 let mapleader=","
 
-set autoindent
-set pastetoggle=<F5>
-set smarttab
-set hlsearch
-set scs
-set nu
-set history=500
-set ruler
-set incsearch
-set expandtab
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
-set scrolloff=20
-set backspace=indent,start,eol
-set showmatch
-set textwidth=80
-set colorcolumn=81
-set formatoptions+=t
 set autochdir
+set autoindent
+set backspace=indent,start,eol
+set colorcolumn=81
+set expandtab
+set formatoptions+=t
+set history=500
+set hlsearch
+set incsearch
+set number
+set pastetoggle=<F5>
+set ruler
+set scrolloff=20
+set scs
+set shiftwidth=2
+set showmatch
+set smarttab
+set softtabstop=2
+set spell
+set tabstop=2
+set textwidth=80
 
 function! HasPaste()
     if &paste
@@ -66,6 +67,10 @@ imap <C-x> <Esc>:q!<CR>
 nmap <C-x> :q!<CR>
 
 autocmd BufEnter *.go,*.py,*.h,*.cc set foldmethod=indent
+
+" Go does not have 80 column limitation.
+autocmd BufEnter *.go set textwidth=120
+autocmd BufEnter *.go set colorcolumn=121
 
 " Removes trailing spaces.
 autocmd BufWritePre *.py,*.go,*.h,*.cc,*.sh,*.proto,*.md,*.borg :%s/\s\+$//e
