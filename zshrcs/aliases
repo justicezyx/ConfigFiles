@@ -1,6 +1,5 @@
 alias rm='rm -i'
 alias ll='ls -lh'
-alias df='df -h'
 
 alias c='xclip -selection clipboard'
-alias cl='/usr/bin/clang++-3.6 -std=c++11'
+alias cl='/usr/bin/clang++ -std=c++11'
