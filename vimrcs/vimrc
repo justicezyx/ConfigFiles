@@ -78,5 +78,3 @@ autocmd BufWritePre *.py,*.go,*.h,*.cc,*.sh,*.proto,*.md,*.borg :%s/\s\+$//e
 " By default, Vim recognizes files with the .md suffix as Modula2 files rather
 " than Markdown files.
 autocmd BufNewFile,BufRead *.md setfiletype markdown
-
-execute pathogen#infect()
