@@ -18,21 +18,9 @@
 [push]
 	default = matching
 [diff]
-  # external = /usr/local/google/home/yaxiongzhao/bin/git-diff-wrapper.sh
-  # tool = bc3
-[merge]
-	tool = diffmerge
-[mergetool "bc3"]
-	cmd = /usr/local/google/home/yaxiongzhao/bin/bcompare $LOCAL $REMOTE $BASE $MERGED
-	trustExitCode = true
-[difftool]
-  # bc3 = trustExitCode
-[diff]
-	tool = diffmerge
-[difftool "diffmerge"]
-	cmd = diffmerge \"$LOCAL\" \"$REMOTE\"
-[mergetool "diffmerge"]
-	cmd = "diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$(if test -f \"$BASE\"; then echo \"$BASE\"; else echo \"$LOCAL\"; fi)\" \"$REMOTE\""
-	trustExitCode = true
+  tool = meld
+	guitool = meld
 [credential]
 	helper = cache --timeout=2592000
+[difftool]
+	prompt = false

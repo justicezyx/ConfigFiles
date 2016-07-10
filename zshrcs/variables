@@ -3,5 +3,7 @@ export EDITOR='vi'
 
 # GO
 export PATH=$PATH:/usr/local/go/bin
-export GOPATH=~/workspace/resource_manager
+export GOPATH=~/workspace/glow
 export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:~/workspace/google_appengine/
+export PATH=$PATH:~/workspace/go_appengine/

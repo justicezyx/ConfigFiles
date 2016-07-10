@@ -80,3 +80,11 @@ function work() {
     tmux new -s work
   fi
 }
+
+function gopath() {
+  if [[ "$1" == "" ]]; then
+    echo "Needs a directory name, got empty..."
+    return
+  fi
+  export GOPATH=~/workspace/$1
+}
