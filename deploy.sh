@@ -18,6 +18,12 @@ if [ ! -d ~/.vim/bundle/vim-go ]; then
   git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
 fi
 
+if [ ! -d ~/.vim/bundle/vim-surround ]; then
+  echo "Installing vim-surround ..."
+  git clone git clone git://github.com/tpope/vim-surround.git \
+    ~/.vim/bundle/vim-surround
+fi
+
 # Setup symbol links to the files in PWD.
 unlink ~/.gitconfig
 ln -s -f $(pwd)/gitconfig ~/.gitconfig
@@ -39,3 +45,6 @@ ln -s -f $(pwd)/zshrcs ~/.zshrcs
 
 unlink ~/.tmux.conf
 ln -s -f $(pwd)/tmux.conf ~/.tmux.conf
+
+echo
+echo "Remember to run :Helptags after installing plugin for pathogen"
