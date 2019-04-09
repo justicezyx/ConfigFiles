@@ -20,7 +20,7 @@ fi
 
 if [ ! -d ~/.vim/bundle/vim-surround ]; then
   echo "Installing vim-surround ..."
-  git clone git clone git://github.com/tpope/vim-surround.git \
+  git clone https://github.com/tpope/vim-surround.git \
     ~/.vim/bundle/vim-surround
 fi
 
